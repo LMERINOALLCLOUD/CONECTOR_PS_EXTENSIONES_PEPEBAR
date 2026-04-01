@@ -1,0 +1,39 @@
+//7227684
+page 60107 "Atributos valores PS"
+{
+    Caption = 'Atributos valores PS';
+    PageType = List;
+    UsageCategory = None;
+    SourceTable = "Item Attribute Value";
+    SourceTableView = where(Value = filter(<> ''));
+
+    InsertAllowed = false;
+    DeleteAllowed = false;
+    ModifyAllowed = true;
+
+    layout
+    {
+        area(Content)
+        {
+            repeater(general)
+            {
+                field("Attribute ID"; "Attribute ID")
+                {
+                    ApplicationArea = All;
+                }
+                field(ID; ID)
+                {
+                    ApplicationArea = All;
+                }
+                field(Value; Value)
+                {
+                    ApplicationArea = All;
+                }
+                field(IdPs; IdPs)
+                {
+                    ApplicationArea = All;
+                }
+            }
+        }
+    }
+}
