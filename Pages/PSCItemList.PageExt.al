@@ -5,12 +5,12 @@ pageextension 60103 P31ItemListExtension extends "Item List"
     {
         addlast(Control1)
         {
-            field(IdPS; IdPS)
+            field(IdPS; Rec.IdPS)
             {
                 ApplicationArea = All;
                 Editable = false;
             }
-            field("Producto web"; "Producto web")
+            field("Producto web"; Rec."Producto web")
             {
                 ApplicationArea = All;
                 Editable = false;

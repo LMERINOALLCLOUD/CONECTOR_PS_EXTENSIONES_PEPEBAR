@@ -18,48 +18,48 @@ page 60101 "OperacionesAsincronas"
             repeater(General)
             {
 
-                field(idAsync; idAsync)
+                field(idAsync; Rec.idAsync)
                 {
                     ApplicationArea = All;
                     Editable = false;
                 }
-                field(IdOrigen; IdOrigen)
+                field(IdOrigen; Rec.IdOrigen)
                 {
                     ApplicationArea = All;
                     Editable = false;
                 }
-                field(IdDestino; IdDestino)
+                field(IdDestino; Rec.IdDestino)
                 {
                     ApplicationArea = All;
                     Editable = false;
                 }
-                field(Tipo; Tipo)
+                field(Tipo; Rec.Tipo)
                 {
                     ApplicationArea = All;
                     Editable = false;
                 }
-                field(Cantidad; Cantidad)
+                field(Cantidad; Rec.Cantidad)
                 {
                     ApplicationArea = All;
                     Editable = false;
                 }
 
-                field(Texto; Texto)
+                field(Texto; Rec.Texto)
                 {
                     ApplicationArea = All;
                     Editable = false;
                 }
-                field("Fecha/Hora"; "Fecha/Hora")
+                field("Fecha/Hora"; Rec."Fecha/Hora")
                 {
                     ApplicationArea = All;
                     Editable = false;
                 }
-                field(Procesado; Procesado)
+                field(Procesado; Rec.Procesado)
                 {
                     ApplicationArea = All;
                     Editable = true;
                 }
-                field("Fecha/Hora proceso"; "Fecha/Hora proceso")
+                field("Fecha/Hora proceso"; Rec."Fecha/Hora proceso")
                 {
                     ApplicationArea = All;
                     Editable = false;

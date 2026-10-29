@@ -17,19 +17,19 @@ page 60107 "Atributos valores PS"
         {
             repeater(general)
             {
-                field("Attribute ID"; "Attribute ID")
+                field("Attribute ID"; Rec."Attribute ID")
                 {
                     ApplicationArea = All;
                 }
-                field(ID; ID)
+                field(ID; Rec.ID)
                 {
                     ApplicationArea = All;
                 }
-                field(Value; Value)
+                field(Value; Rec.Value)
                 {
                     ApplicationArea = All;
                 }
-                field(IdPs; IdPs)
+                field(IdPs; Rec.IdPs)
                 {
                     ApplicationArea = All;
                 }

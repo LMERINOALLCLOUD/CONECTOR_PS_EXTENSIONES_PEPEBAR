@@ -15,42 +15,42 @@ page 60102 "Lista Estados Pedido PS"
         {
             repeater(General)
             {
-                field(idEstadoPS; idEstadoPS)
+                field(idEstadoPS; Rec.idEstadoPS)
                 {
                     ApplicationArea = All;
                     Editable = false;
                 }
-                field(nombreEstadoPS; nombreEstadoPS)
+                field(nombreEstadoPS; Rec.nombreEstadoPS)
                 {
                     ApplicationArea = All;
                     Editable = false;
                 }
-                field(moduloPagoPS; moduloPagoPS)
+                field(moduloPagoPS; Rec.moduloPagoPS)
                 {
                     ApplicationArea = All;
                     Editable = false;
                 }
-                field(formaPagoNAV; formaPagoNAV)
+                field(formaPagoNAV; Rec.formaPagoNAV)
                 {
                     ApplicationArea = All;
                 }
-                field("Error Pago"; "Error Pago")
+                field("Error Pago"; Rec."Error Pago")
                 {
                     ApplicationArea = All;
                 }
-                field("Pte Pago"; "Pte Pago")
+                field("Pte Pago"; Rec."Pte Pago")
                 {
                     ApplicationArea = All;
                 }
-                field(Lanzado; Lanzado)
+                field(Lanzado; Rec.Lanzado)
                 {
                     ApplicationArea = All;
                 }
-                field(Registrado; Registrado)
+                field(Registrado; Rec.Registrado)
                 {
                     ApplicationArea = All;
                 }
-                field("Conf. fabrica"; "Conf. fabrica")
+                field("Conf. fabrica"; Rec."Conf. fabrica")
                 {
                     ApplicationArea = All;
                 }

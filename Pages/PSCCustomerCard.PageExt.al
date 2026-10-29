@@ -8,30 +8,30 @@ pageextension 60100 P21CustomerCardExtension extends "Customer Card"
             group("PS Sincro")
             {
                 CaptionML = ESP = 'PS Sincro', ENU = 'PS Sync';
-                field("Pendiente sincro B2B"; "Pendiente sincro B2B")
+                field("Pendiente sincro B2B"; Rec."Pendiente sincro B2B")
                 {
                     ApplicationArea = All;
                     Editable = false;
                 }
 
-                field(IdClientePS; IdClientePS)
+                field(IdClientePS; Rec.IdClientePS)
                 {
                     ApplicationArea = All;
                     Editable = false;
                 }
 
-                field(fechaAltaClientePS; fechaAltaClientePS)
+                field(fechaAltaClientePS; Rec.fechaAltaClientePS)
                 {
                     ApplicationArea = All;
                     Editable = false;
                 }
 
-                field(EsClientePS; EsClientePS)
+                field(EsClientePS; Rec.EsClientePS)
                 {
                     ApplicationArea = All;
                     Editable = false;
                 }
-                field("Email PS"; "Email PS")
+                field("Email PS"; Rec."Email PS")
                 {
                     ApplicationArea = All;
                 }
@@ -57,7 +57,7 @@ pageextension 60100 P21CustomerCardExtension extends "Customer Card"
                     trigger OnAction()
                     begin
                         if Confirm('Se marcará el cliente para su sincronización con PS.\¿Desea continuar?', true) then
-                            rec.Validate("Pendiente sincro B2B", true);
+                            Rec.Validate("Pendiente sincro B2B", true);
                     end;
                 }
             }

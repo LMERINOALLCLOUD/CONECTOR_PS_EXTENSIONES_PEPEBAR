@@ -2,7 +2,7 @@
   "id": "eee144db-0ac6-4b04-8b23-961a723d34b2",
   "name": "Conector PS",
   "publisher": "Allcloud Consulting S.L.",
-  "version": "1.0.0.77",
+  "version": "1.0.0.90",
   "brief": "",
   "description": "Conector PS-NAV",
   "privacyStatement": "",
@@ -19,8 +19,8 @@
     }
   ],
   "screenshots": [],
-  "platform": "26.0.0.0",
-  "application": "26.0.0.0",
+  "platform": "28.0.0.0",
+  "application": "28.0.0.0",
   "idRanges": [
     {
       "from": 60100,
@@ -28,7 +28,7 @@
     }
   ],
   "contextSensitiveHelpUrl": "https://ConectorPS.com/help/",
-  "showMyCode": false,
+  "resourceExposurePolicy": {"allowDebugging": true},
   "runtime": "15.0"
 
 }

@@ -7,22 +7,22 @@ pageextension 60104 T42SalesOrderExtension extends "Sales Order"
         {
             group("PS Sincro")
             {
-                field(EsPedidoPS; EsPedidoPS)
+                field(EsPedidoPS; Rec.EsPedidoPS)
                 {
                     ApplicationArea = All;
                     Editable = false;
                 }
-                field(IdPedidoPS; IdPedidoPS)
+                field(IdPedidoPS; Rec.IdPedidoPS)
                 {
                     ApplicationArea = All;
                     Editable = false;
                 }
-                field("Ref. pedido PS"; "Ref. pedido PS")
+                field("Ref. pedido PS"; Rec."Ref. pedido PS")
                 {
                     ApplicationArea = All;
                     Editable = false;
                 }
-                field("Estado Pedido PS"; "Estado Pedido PS")
+                field("Estado Pedido PS"; Rec."Estado Pedido PS")
                 {
                     ApplicationArea = All;
                     trigger OnValidate()
@@ -30,11 +30,11 @@ pageextension 60104 T42SalesOrderExtension extends "Sales Order"
                         CurrPage.Update();
                     end;
                 }
-                field("Desc. Estado Pedido PS"; "Desc. Estado Pedido PS")
+                field("Desc. Estado Pedido PS"; Rec."Desc. Estado Pedido PS")
                 {
                     ApplicationArea = All;
                 }
-                field("Nº seguimiento PS"; "Nº seguimiento PS")
+                field("Nº seguimiento PS"; Rec."Nº seguimiento PS")
                 {
                     Editable = false;
                     ApplicationArea = All;
@@ -51,17 +51,17 @@ pageextension 60104 T42SalesOrderExtension extends "Sales Order"
                 group("Informacion importes pedido")
                 {
                     CaptionML = ESP = 'Importes del pedido PS', ENU = 'PS Order Amounts';
-                    field(TotalPSIva; TotalPSIva)
+                    field(TotalPSIva; Rec.TotalPSIva)
                     {
                         ApplicationArea = All;
                         Editable = false;
                     }
-                    field(TotalEnvioPSiva; TotalEnvioPSiva)
+                    field(TotalEnvioPSiva; Rec.TotalEnvioPSiva)
                     {
                         ApplicationArea = All;
                         Editable = false;
                     }
-                    field(TotalPCIva; TotalPCIva)
+                    field(TotalPCIva; Rec.TotalPCIva)
                     {
                         ApplicationArea = All;
                         Editable = false;

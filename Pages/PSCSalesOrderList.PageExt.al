@@ -5,22 +5,22 @@ pageextension 60106 P9305_SalesOrderListExtension extends "Sales Order List"
     {
         addafter("Campaign No.")
         {
-            field(EsPedidoPS; EsPedidoPS)
+            field(EsPedidoPS; Rec.EsPedidoPS)
             {
                 ApplicationArea = All;
                 StyleExpr = StyleText;
             }
-            field(IdPedidoPS; IdPedidoPS)
+            field(IdPedidoPS; Rec.IdPedidoPS)
             {
                 ApplicationArea = All;
                 StyleExpr = StyleText;
             }
-            field("Estado Pedido PS"; "Estado Pedido PS")
+            field("Estado Pedido PS"; Rec."Estado Pedido PS")
             {
                 ApplicationArea = All;
                 StyleExpr = StyleText;
             }
-            field("Desc. Estado Pedido PS"; "Desc. Estado Pedido PS")
+            field("Desc. Estado Pedido PS"; Rec."Desc. Estado Pedido PS")
             {
                 ApplicationArea = All;
                 StyleExpr = StyleText;
@@ -34,7 +34,7 @@ pageextension 60106 P9305_SalesOrderListExtension extends "Sales Order List"
 
     trigger OnAfterGetRecord()
     begin
-        StyleText := CUPS.getStyleTextOrderStatus("Estado Pedido PS");
+        StyleText := CUPS.getStyleTextOrderStatus(Rec."Estado Pedido PS");
     end;
 
     var

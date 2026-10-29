@@ -149,23 +149,23 @@ codeunit 60100 "PS Sincro Suscribers"
     end;
 
     //price calculation
-    [EventSubscriber(ObjectType::Table, 7002, 'OnAfterInsertEvent', '', true, true)]
-    local procedure OnAfterInsertEventSalesPrice(var Rec: Record "Sales Price"; RunTrigger: Boolean)
-    var
-        cuPS: Codeunit PSSincro;
-        rItem: Record Item;
-        rSalesSetup: Record "Sales & Receivables Setup";
-    begin
-        rSalesSetup.get();
-        if not rec.IsTemporary then begin
-            if rSalesSetup."Sincro Tarifas Automat." then begin
-                rItem.get(Rec."Item No.");
-                if rItem.IdPS > 0 then begin
-                    cups.insertarOperacionActTarifa(rItem.IdPS);
-                end;
-            end;
-        end;
-    end;
+    // [EventSubscriber(ObjectType::Table, 7002, 'OnAfterInsertEvent', '', true, true)]
+    // local procedure OnAfterInsertEventSalesPrice(var Rec: Record "Sales Price"; RunTrigger: Boolean)
+    // var
+    //     cuPS: Codeunit PSSincro;
+    //     rItem: Record Item;
+    //     rSalesSetup: Record "Sales & Receivables Setup";
+    // begin
+    //     rSalesSetup.get();
+    //     if not rec.IsTemporary then begin
+    //         if rSalesSetup."Sincro Tarifas Automat." then begin
+    //             rItem.get(Rec."Item No.");
+    //             if rItem.IdPS > 0 then begin
+    //                 cups.insertarOperacionActTarifa(rItem.IdPS);
+    //             end;
+    //         end;
+    //     end;
+    // end;
 
     /*SE ELIMINA ESTE EVENTO Y SE SUSTITUYE POR EL ONAFTERVALIDATE YA QUE ESTE A VECES NO SE LANZA AL IMPORTAR TARIFAS DESDE RAPID-START
     [EventSubscriber(ObjectType::Table, 7002, 'OnAfterModifyEvent', '', true, true)]
@@ -188,77 +188,77 @@ codeunit 60100 "PS Sincro Suscribers"
     end;
     */
 
-    [EventSubscriber(ObjectType::Table, Database::"Sales Price", 'OnAfterValidateEvent', 'Unit Price', true, true)]
-    local procedure "Sales Price_OnAfterValidateEvent_Unit Price"
-    (
-        var Rec: Record "Sales Price";
-        var xRec: Record "Sales Price";
-        CurrFieldNo: Integer
-    )
-    var
-        cuPS: Codeunit PSSincro;
-        rItem: Record Item;
-        rSalesSetup: Record "Sales & Receivables Setup";
-    begin
-        rSalesSetup.get();
-        if not rec.IsTemporary then begin
-            if rSalesSetup."Sincro Tarifas Automat." then begin
-                rItem.get(Rec."Item No.");
-                if rItem.IdPS > 0 then begin
-                    if (rec."Unit Price" <> xRec."Unit Price") then
-                        cups.insertarOperacionActTarifa(rItem.IdPS);
-                end;
-            end;
-        end;
-    end;
+    // [EventSubscriber(ObjectType::Table, Database::"Sales Price", 'OnAfterValidateEvent', 'Unit Price', true, true)]
+    // local procedure "Sales Price_OnAfterValidateEvent_Unit Price"
+    // (
+    //     var Rec: Record "Sales Price";
+    //     var xRec: Record "Sales Price";
+    //     CurrFieldNo: Integer
+    // )
+    // var
+    //     cuPS: Codeunit PSSincro;
+    //     rItem: Record Item;
+    //     rSalesSetup: Record "Sales & Receivables Setup";
+    // begin
+    //     rSalesSetup.get();
+    //     if not rec.IsTemporary then begin
+    //         if rSalesSetup."Sincro Tarifas Automat." then begin
+    //             rItem.get(Rec."Item No.");
+    //             if rItem.IdPS > 0 then begin
+    //                 if (rec."Unit Price" <> xRec."Unit Price") then
+    //                     cups.insertarOperacionActTarifa(rItem.IdPS);
+    //             end;
+    //         end;
+    //     end;
+    // end;
 
 
-    [EventSubscriber(ObjectType::Table, Database::"Sales Line Discount", 'OnAfterValidateEvent', 'Line Discount %', true, true)]
-    local procedure "Sales Line Discount_OnAfterValidateEvent_Line Discount %"
-    (
-        var Rec: Record "Sales Line Discount";
-        var xRec: Record "Sales Line Discount";
-        CurrFieldNo: Integer
-    )
-    var
-        cuPS: Codeunit PSSincro;
-        rItem: Record Item;
-        rSalesSetup: Record "Sales & Receivables Setup";
-    begin
-        rSalesSetup.Get();
-        if Rec.Type <> Rec.Type::Item then
-            exit;
+    // [EventSubscriber(ObjectType::Table, Database::"Sales Line Discount", 'OnAfterValidateEvent', 'Line Discount %', true, true)]
+    // local procedure "Sales Line Discount_OnAfterValidateEvent_Line Discount %"
+    // (
+    //     var Rec: Record "Sales Line Discount";
+    //     var xRec: Record "Sales Line Discount";
+    //     CurrFieldNo: Integer
+    // )
+    // var
+    //     cuPS: Codeunit PSSincro;
+    //     rItem: Record Item;
+    //     rSalesSetup: Record "Sales & Receivables Setup";
+    // begin
+    //     rSalesSetup.Get();
+    //     if Rec.Type <> Rec.Type::Item then
+    //         exit;
 
-        if not rec.IsTemporary then begin
-            if rSalesSetup."Sincro Tarifas Automat." then begin
-                IF rItem.get(Rec.Code) then
-                    if rItem.IdPS > 0 then begin
-                        if (rec."Line Discount %" <> xRec."Line Discount %") then
-                            cups.insertarOperacionActTarifa(rItem.IdPS);
-                    end;
-            end;
-        end;
-    end;
+    //     if not rec.IsTemporary then begin
+    //         if rSalesSetup."Sincro Tarifas Automat." then begin
+    //             IF rItem.get(Rec.Code) then
+    //                 if rItem.IdPS > 0 then begin
+    //                     if (rec."Line Discount %" <> xRec."Line Discount %") then
+    //                         cups.insertarOperacionActTarifa(rItem.IdPS);
+    //                 end;
+    //         end;
+    //     end;
+    // end;
 
 
 
-    [EventSubscriber(ObjectType::Table, 7002, 'OnBeforeDeleteEvent', '', true, true)]
-    local procedure OnBeforeDeleteEventItemSalesPrice(var Rec: Record "Sales Price"; RunTrigger: Boolean)
-    var
-        cuPS: Codeunit PSSincro;
-        rItem: Record Item;
-        rSalesSetup: Record "Sales & Receivables Setup";
-    begin
-        rSalesSetup.get();
-        if not rec.IsTemporary then begin
-            if rSalesSetup."Sincro Tarifas Automat." then begin
-                rItem.get(Rec."Item No.");
-                if rItem.IdPS > 0 then begin
-                    cups.insertarOperacionActTarifa(rItem.IdPS);
-                end;
-            end;
-        end;
-    end;
+    // [EventSubscriber(ObjectType::Table, 7002, 'OnBeforeDeleteEvent', '', true, true)]
+    // local procedure OnBeforeDeleteEventItemSalesPrice(var Rec: Record "Sales Price"; RunTrigger: Boolean)
+    // var
+    //     cuPS: Codeunit PSSincro;
+    //     rItem: Record Item;
+    //     rSalesSetup: Record "Sales & Receivables Setup";
+    // begin
+    //     rSalesSetup.get();
+    //     if not rec.IsTemporary then begin
+    //         if rSalesSetup."Sincro Tarifas Automat." then begin
+    //             rItem.get(Rec."Item No.");
+    //             if rItem.IdPS > 0 then begin
+    //                 cups.insertarOperacionActTarifa(rItem.IdPS);
+    //             end;
+    //         end;
+    //     end;
+    // end;
 
 
     [EventSubscriber(ObjectType::Table, Database::"Customer", 'OnAfterValidateEvent', 'Customer Disc. Group', true, true)]
@@ -385,7 +385,10 @@ codeunit 60100 "PS Sincro Suscribers"
         if rItem.IdPS = 0 then
             exit;
 
-        if (Rec."Tipo Descripcion" = Rec."Tipo Descripcion"::"Prod Desc Corta") or (Rec."Tipo Descripcion" = Rec."Tipo Descripcion"::"Prod Desc Larga") then
+        if (Rec."Tipo Descripcion" IN [Rec."Tipo Descripcion"::"Prod Desc Corta", 
+            Rec."Tipo Descripcion"::"Prod Desc Larga",
+            Rec."Tipo Descripcion"::"Prod Pto 1",
+            Rec."Tipo Descripcion"::"Prod Pto 2"]) then
             cuPS.insertarOperacionActualizacionDescripcionLarga(rItem."No.")
         else
             cuPS.insertarOperacionCamposPersonalizados(rItem."No.");
@@ -479,7 +482,21 @@ codeunit 60100 "PS Sincro Suscribers"
         cups: Codeunit PSSincro;
     begin
         if Rec."Multiples unidades" <> xRec."Multiples unidades" then
-            cuPS.insertarOperacionMultiplesUnidades(Rec."No.", Rec."Multiples unidades");
+            cuPS.insertarOperacionMultiplesUnidades(Rec."No.", Rec."Multiples unidades", Rec."Minimum Order Quantity");
+    end;
+
+    [EventSubscriber(ObjectType::Table, Database::"Item", 'OnAfterValidateEvent', 'Minimum Order Quantity', true, true)]
+    local procedure "Item_OnAfterValidateEvent_Minimum_Order_Qty"
+    (
+        var Rec: Record "Item";
+        var xRec: Record "Item";
+        CurrFieldNo: Integer
+    )
+    var
+        cups: Codeunit PSSincro;
+    begin
+        if Rec."Minimum Order Quantity" <> xRec."Minimum Order Quantity" then
+            cuPS.insertarOperacionMultiplesUnidades(Rec."No.", Rec."Multiples unidades", Rec."Minimum Order Quantity");
     end;
 
 
@@ -498,6 +515,127 @@ codeunit 60100 "PS Sincro Suscribers"
             cuPS.insertarOperacionActualizacionCategoria(Rec."Item No.");
     end;
 
+    //NUEVA FUNCIONALIDAD DE PRECIOS 
+    [EventSubscriber(ObjectType::Table, Database::"Price List Header", 'OnAfterValidateEvent', 'Status', true, true)]
+    local procedure "Price List Header_OnAfterValidateEvent_Status"
+        (
+            var Rec: Record "Price List Header";
+            var xRec: Record "Price List Header";
+            CurrFieldNo: Integer
+        )
+    var
+        rPriceListLine: Record "Price List Line";
+        cuPS: Codeunit PSSincro;
+        rItem: Record Item;
+        rItemVariants: Record "Item Variant";
+        rSalesSeup: Record "Sales & Receivables Setup";
+    begin
+        rSalesSeup.Get();
+        if not rSalesSeup."Sincro Tarifas Automat." then
+            exit;
 
+        if rec.Status = Rec.Status::Active then begin
+            rPriceListLine.Reset();
+            rPriceListLine.SetRange("Price List Code", Rec.Code);
+            if rPriceListLine.FindSet() then
+                repeat
+                    if (rPriceListLine."Source Type" <> rPriceListLine."Source Type"::"Customer Price Group") and
+                        (rPriceListLine."Source Type" <> rPriceListLine."Source Type"::"All Customers") then
+                        exit;
 
+                    if rPriceListLine."Price Type" <> rPriceListLine."Price Type"::Sale then
+                        exit;
+
+                    if rPriceListLine."Asset Type" <> rPriceListLine."Asset Type"::Item then
+                        exit;
+
+                    if rItem.get(rPriceListLine."Asset No.") then
+                        if rItem.IdPS > 0 then
+                            cups.insertarOperacionActTarifa(rItem.IdPS);
+                until rPriceListLine.Next() = 0;
+        end;
+    end;
+
+    [EventSubscriber(ObjectType::Table, Database::"Price List Line", 'OnAfterModifyEvent', '', true, true)]
+    local procedure "Price List Line_OnAfterModifyEvent"
+    (
+        var Rec: Record "Price List Line";
+        var xRec: Record "Price List Line";
+        RunTrigger: Boolean
+    )
+    var
+        cuPS: Codeunit PSSincro;
+        rItem: Record Item;
+        rItemVariants: Record "Item Variant";
+        rSalesSeup: Record "Sales & Receivables Setup";
+    begin
+        rSalesSeup.Get();
+        if not rSalesSeup."Sincro Tarifas Automat." then
+            exit;
+
+        if (Rec."Source Type" <> Rec."Source Type"::"Customer Price Group") and
+                        (Rec."Source Type" <> Rec."Source Type"::"All Customers") then
+            exit;
+
+        if rec."Price Type" <> rec."Price Type"::Sale then
+            exit;
+
+        if rec."Asset Type" <> rec."Asset Type"::Item then
+            exit;
+
+        if Rec.Status = rec.Status::Active then begin
+            if rItem.get(Rec."Asset No.") then
+                if rItem.IdPS > 0 then
+                    cups.insertarOperacionActTarifa(rItem.IdPS);
+        end;
+    END;
+
+    [EventSubscriber(ObjectType::Table, Database::"Price List Line", 'OnAfterInsertEvent', '', true, true)]
+    local procedure "Price List Line_OnAfterInsertEvent"
+    (
+        var Rec: Record "Price List Line";
+        RunTrigger: Boolean
+    )
+    var
+        cuPS: Codeunit PSSincro;
+        rItem: Record Item;
+        rItemVariants: Record "Item Variant";
+        rSalesSeup: Record "Sales & Receivables Setup";
+    begin
+        rSalesSeup.Get();
+        if not rSalesSeup."Sincro Tarifas Automat." then
+            exit;
+
+        if (Rec."Source Type" <> Rec."Source Type"::"Customer Price Group") and
+                        (Rec."Source Type" <> Rec."Source Type"::"All Customers") then
+            exit;
+
+        if rec."Price Type" <> rec."Price Type"::Sale then
+            exit;
+
+        if rec."Asset Type" <> rec."Asset Type"::Item then
+            exit;
+
+        if Rec.Status = rec.Status::Active then begin
+            if rItem.get(Rec."Asset No.") then
+                if rItem.IdPS > 0 then
+                    cups.insertarOperacionActTarifa(rItem.IdPS);
+
+        end;
+    end;
+
+    [EventSubscriber(ObjectType::Table, 27, 'OnAfterValidateEvent', 'Manufacturer Code', true, true)]
+    local procedure OnAfterValidateItemTableManufacturerCode(var Rec: Record Item; var xRec: Record Item; CurrFieldNo: Integer)
+    var
+        cuPS: Codeunit PSSincro;
+        rSalesSetup: Record "Sales & Receivables Setup";
+    begin
+        rSalesSetup.get();
+        if rSalesSetup."Sincronizar fabricantes" = rSalesSetup."Sincronizar fabricantes"::Automatica then begin
+            if Rec.IdPS > 0 then begin
+                if xRec."Manufacturer Code" <> Rec."Manufacturer Code" then
+                    cups.insertarOperacionActualizacionFabricante(rec."No.", Rec."Manufacturer Code");
+            end;
+        end;
+    end;
 }

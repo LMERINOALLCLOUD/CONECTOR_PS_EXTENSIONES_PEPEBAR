@@ -261,6 +261,13 @@ tableextension 60105 T311SalesReceivablesSetExt extends "Sales & Receivables Set
             OptionMembers = No,Si,Automatica;
             OptionCaptionML = ESP = 'No,Sí,Automática', ENU = 'No,Yes,Automatic';
         }
+        field(60185; "Sincronizar fabricantes"; Option)
+        {
+            DataClassification = ToBeClassified;
+            CaptionML = ESP = 'Sincronizar fabricantes', ENU = 'Manufacturer Sync.';
+            OptionMembers = No,Si,Automatica;
+            OptionCaptionML = ESP = 'No,Sí,Automática', ENU = 'No,Yes,Automatic';
+        }
         //PERSO ELALMACENDELPROFESIONAL
         field(60142; "Ud Medida productos"; Code[10])
         {

@@ -1,4 +1,3 @@
-//7227679
 pageextension 60102 T30ItemCardExtension extends "Item Card"
 {
     layout
@@ -7,27 +6,27 @@ pageextension 60102 T30ItemCardExtension extends "Item Card"
         {
             group("PS Sincro")
             {
-                field("Producto web"; "Producto web")
+                field("Producto web"; Rec."Producto web")
                 {
                     ApplicationArea = All;
                     Editable = false;
                 }
-                field(IdPS; IdPS)
+                field(IdPS; Rec.IdPS)
                 {
                     ApplicationArea = All;
                     Editable = false;
                 }
-                field(Combinacion; Combinacion)
+                field(Combinacion; Rec.Combinacion)
                 {
                     ApplicationArea = All;
                     Editable = false;
                 }
-                field("Id Combinacion"; "Id Combinacion")
+                field("Id Combinacion"; Rec."Id Combinacion")
                 {
                     ApplicationArea = All;
                     Editable = false;
                 }
-                field("Multiples unidades"; "Multiples unidades")
+                field("Multiples unidades"; Rec."Multiples unidades")
                 {
                     ApplicationArea = All;
                 }
@@ -75,8 +74,8 @@ pageextension 60102 T30ItemCardExtension extends "Item Card"
                     var
                     begin
                         IF CONFIRM(Text001) THEN BEGIN
-                            "Producto web" := TRUE;
-                            MODIFY();
+                            Rec."Producto web" := TRUE;
+                            Rec.MODIFY();
                         END;
                     end;
                 }
@@ -92,10 +91,10 @@ pageextension 60102 T30ItemCardExtension extends "Item Card"
                         CuPS: Codeunit PSSincro;
                     begin
                         IF CONFIRM(Text002) THEN BEGIN
-                            CuPS.insertarOperacionBajaProducto(rec."No.");
-                            IdPs := 0;
-                            "Producto web" := FALSE;
-                            MODIFY();
+                            CuPS.insertarOperacionBajaProducto(Rec."No.");
+                            Rec.IdPs := 0;
+                            Rec."Producto web" := FALSE;
+                            Rec.MODIFY();
                         END;
                     end;
                 }
@@ -111,8 +110,26 @@ pageextension 60102 T30ItemCardExtension extends "Item Card"
                         CuPS: Codeunit PSSincro;
                     begin
                         IF CONFIRM(Text003) THEN
-                            IF IdPs > 0 THEN
-                                CuPS.insertarOperacionActStock("No.")
+                            IF Rec.IdPs > 0 THEN
+                                CuPS.insertarOperacionActStock(Rec."No.")
+
+                            ELSE
+                                ERROR(Text004);
+                    end;
+                }
+                action("SincroPrecios")
+                {
+                    ApplicationArea = all;
+                    CaptionML = ESP = 'Resincronizar precios para producto', ENU = 'Resincronizar precios para producto';
+                    Image = Price;
+
+                    trigger OnAction();
+                    var
+                        CuPS: Codeunit PSSincro;
+                    begin
+                        IF CONFIRM('Se sincronizará la tarifa para el producto ¿Desea continuar?', false) THEN
+                            IF Rec.IdPs > 0 THEN
+                                CuPS.insertarOperacionActTarifa(Rec.IdPS)
 
                             ELSE
                                 ERROR(Text004);
@@ -135,8 +152,8 @@ pageextension 60102 T30ItemCardExtension extends "Item Card"
                             Error(Text007);
 
                         IF CONFIRM(Text005) THEN
-                            IF IdPs > 0 THEN
-                                CuPS.insertarOperacionActualizacionCategoria("No.")
+                            IF Rec.IdPs > 0 THEN
+                                CuPS.insertarOperacionActualizacionCategoria(Rec."No.")
                             ELSE
                                 ERROR(Text004);
                     end;
@@ -158,8 +175,8 @@ pageextension 60102 T30ItemCardExtension extends "Item Card"
                             Error(Text008);
 
                         IF CONFIRM(Text006) THEN
-                            IF IdPs > 0 THEN
-                                CuPS.insertarOperacionActualizacionAtributos("No.")
+                            IF Rec.IdPs > 0 THEN
+                                CuPS.insertarOperacionActualizacionAtributos(Rec."No.")
                             ELSE
                                 ERROR(Text004);
                     end;
@@ -177,8 +194,8 @@ pageextension 60102 T30ItemCardExtension extends "Item Card"
                     begin
 
                         IF CONFIRM(Text009) THEN
-                            IF IdPs > 0 THEN
-                                CuPS.insertarOperacionActImagenesProducto("No.")
+                            IF Rec.IdPs > 0 THEN
+                                CuPS.insertarOperacionActImagenesProducto(Rec."No.")
                             ELSE
                                 ERROR(Text004);
                     end;
@@ -196,10 +213,33 @@ pageextension 60102 T30ItemCardExtension extends "Item Card"
                     begin
 
                         IF CONFIRM(Text010) THEN
-                            IF IdPs > 0 THEN BEGIN
-                                CuPS.insertarOperacionActualizacionDescripcionLarga("No.");
+                            IF Rec.IdPs > 0 THEN BEGIN
+                                CuPS.insertarOperacionActualizacionDescripcionLarga(Rec."No.");
                                 //ACTUALIZAMOS TAMBIÉN LOS CAMPOS PERSONALIZADOS
-                                CuPS.insertarOperacionCamposPersonalizados("No.");
+                                CuPS.insertarOperacionCamposPersonalizados(Rec."No.");
+                            END ELSE
+                                ERROR(Text004);
+                    end;
+                }
+
+                action("Restableder")
+                {
+                    ApplicationArea = all;
+                    CaptionML = ESP = 'Restableder datos sincronización', ENU = 'Restableder datos sincronización';
+                    Image = DeleteQtyToHandle;
+
+                    trigger OnAction();
+                    var
+                        CuPS: Codeunit PSSincro;
+                    begin
+
+                        IF CONFIRM('Se restablecerán los datos de sincronización y deberá volver a sincronizar los datos con PS ¿Continuar?', false) THEN
+                            IF Rec.IdPs > 0 THEN BEGIN
+                                Rec.IdPS := 0;
+                                Rec."Id Combinacion" := 0;
+                                Rec."Producto web" := false;
+                                Rec.Combinacion := false;
+                                Rec.Modify();
                             END ELSE
                                 ERROR(Text004);
                     end;

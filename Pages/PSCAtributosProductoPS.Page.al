@@ -17,15 +17,15 @@ page 60108 "Atributos producto PS"
         {
             repeater(general)
             {
-                field("No."; "No.")
+                field("No."; Rec."No.")
                 {
                     ApplicationArea = All;
                 }
-                field("Item Attribute ID"; "Item Attribute ID")
+                field("Item Attribute ID"; Rec."Item Attribute ID")
                 {
                     ApplicationArea = All;
                 }
-                field("Item Attribute Value ID"; "Item Attribute Value ID")
+                field("Item Attribute Value ID"; Rec."Item Attribute Value ID")
                 {
                     ApplicationArea = All;
                 }

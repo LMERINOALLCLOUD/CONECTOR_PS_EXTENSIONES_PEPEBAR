@@ -953,6 +953,9 @@ codeunit 60101 PSSincro
                 IF rSalesSetup."Almacén pedidos PS" <> '' THEN
                     rPedido."Location Code" := rSalesSetup."Almacén pedidos PS";
 
+                rPedido."Your Reference" := referenciaPedidoPS;
+                rPedido."Importe Pago al pedido" := TotalPedidoCiva;
+
 
                 //INSERTAMOS EL PEDIDO
                 rPedido.MODIFY();
@@ -999,6 +1002,8 @@ codeunit 60101 PSSincro
                 IF rSalesSetup."Almacén pedidos PS" <> '' THEN
                     rPedido."Location Code" := rSalesSetup."Almacén pedidos PS";
 
+                rPedido."Your Reference" := referenciaPedidoPS;
+                rPedido."Importe Pago al pedido" := TotalPedidoCiva;
 
                 //INSERTAMOS EL PEDIDO
                 rPedido.MODIFY();
@@ -2593,7 +2598,8 @@ UNTIL rEstadosPedido.NEXT = 0;
         xmlNodeOut.AsXmlElement().Add(XmlElement.create('comafe', '', format(comafe)).AsXmlNode());
     end;
 
-    procedure getDescipcionLargaProducto(codProducto: Code[20]): Text
+    procedure getDescripcionesProducto(codProducto: Code[20]; var descripcionLarga: Text; var descripcionCorta: Text;
+        var nombreSEO: Text; var descripcionSEO: Text)
     var
         rItem: Record Item;
         rDescVarias: Record "Descripciones Varias";
@@ -2612,12 +2618,48 @@ UNTIL rEstadosPedido.NEXT = 0;
                 if rDescVarias."Blob Descripcion".HasValue then begin
                     Clear(inStr);
                     rDescVarias."Blob Descripcion".CreateInStream(inStr, TextEncoding::UTF8);
-                    inStr.Read(retorno);
+                    inStr.Read(descripcionLarga);
                 end;
             until rDescVarias.Next() = 0;
-        exit(retorno);
+        rDescVarias.Reset();
+        rDescVarias.SetRange("Tipo Descripcion", rDescVarias."Tipo Descripcion"::"Prod Desc Corta");
+        rDescVarias.SetRange(Codigo, rItem."No.");
+        if rDescVarias.FindSet() then
+            repeat
+                rDescVarias.CalcFields("Blob Descripcion");
+                if rDescVarias."Blob Descripcion".HasValue then begin
+                    Clear(inStr);
+                    rDescVarias."Blob Descripcion".CreateInStream(inStr, TextEncoding::UTF8);
+                    inStr.Read(descripcionCorta);
+                end;
+            until rDescVarias.Next() = 0;
+        rDescVarias.Reset();
+        rDescVarias.SetRange("Tipo Descripcion", rDescVarias."Tipo Descripcion"::"Prod Pto 1");
+        rDescVarias.SetRange(Codigo, rItem."No.");
+        if rDescVarias.FindSet() then
+            repeat
+                rDescVarias.CalcFields("Blob Descripcion");
+                if rDescVarias."Blob Descripcion".HasValue then begin
+                    Clear(inStr);
+                    rDescVarias."Blob Descripcion".CreateInStream(inStr, TextEncoding::UTF8);
+                    inStr.Read(nombreSEO);
+                end;
+            until rDescVarias.Next() = 0;
+        rDescVarias.Reset();
+        rDescVarias.SetRange("Tipo Descripcion", rDescVarias."Tipo Descripcion"::"Prod Pto 2");
+        rDescVarias.SetRange(Codigo, rItem."No.");
+        if rDescVarias.FindSet() then
+            repeat
+                rDescVarias.CalcFields("Blob Descripcion");
+                if rDescVarias."Blob Descripcion".HasValue then begin
+                    Clear(inStr);
+                    rDescVarias."Blob Descripcion".CreateInStream(inStr, TextEncoding::UTF8);
+                    inStr.Read(descripcionSEO);
+                end;
+            until rDescVarias.Next() = 0;
     end;
 
+    /*
     procedure getDescipcionCortaProducto(codProducto: Code[20]): Text
     var
         rItem: Record Item;
@@ -2642,6 +2684,7 @@ UNTIL rEstadosPedido.NEXT = 0;
             until rDescVarias.Next() = 0;
         exit(retorno);
     end;
+    */
 
     //en este evento se suscribirá la funcionalidad que realiza el pedido de compra y lo envía al NAV de Bresme en la extensión de integración
     [IntegrationEvent(false, false)]
@@ -3083,7 +3126,7 @@ UNTIL rEstadosPedido.NEXT = 0;
         END;
     end;
 
-    procedure insertarOperacionMultiplesUnidades(codProducto: Code[20]; multiples: Integer)
+    procedure insertarOperacionMultiplesUnidades(codProducto: Code[20]; multiples: Integer; minOrderQty: Decimal)
     var
         rOperacionesAsincronas: Record "Modificaciones Asincronas PS";
         rItem: Record Item;
@@ -3102,6 +3145,7 @@ UNTIL rEstadosPedido.NEXT = 0;
                     rOperacionesAsincronas.Tipo := rOperacionesAsincronas.Tipo::"Unidades multiples";
                     rOperacionesAsincronas.IdDestino := rItem."No.";
                     rOperacionesAsincronas.Texto := Format(multiples);
+                    rOperacionesAsincronas.Cantidad := minOrderQty;
                     rOperacionesAsincronas."Fecha/Hora" := CURRENTDATETIME();
                     rOperacionesAsincronas.INSERT(TRUE);
                 end;
@@ -3238,7 +3282,7 @@ UNTIL rEstadosPedido.NEXT = 0;
         //rItem.SetFilter("Multiples unidades", '>0');
         IF rItem.FINDFIRST() THEN
             REPEAT
-                insertarOperacionMultiplesUnidades(rItem."No.", rItem."Multiples unidades");
+                insertarOperacionMultiplesUnidades(rItem."No.", rItem."Multiples unidades", rItem."Minimum Order Quantity");
                 window.UPDATE(1, rItem."No.");
             UNTIL rItem.NEXT = 0;
         window.CLOSE();
@@ -3293,6 +3337,172 @@ UNTIL rEstadosPedido.NEXT = 0;
         rLinkMntg.WriteNote(rRecordLink, mensaje);
         rRecordLink.Modify();
     end;
+
+    procedure getPreciosVentaProducto(codProducto: Code[20]; var responseJSON: Text)
+    var
+        rPriceListLine: Record "Price List Line";
+        jsonArr: JsonArray;
+        jsonObj: JsonObject;
+        rItem: Record Item;
+        unitPrice: Decimal;
+        discount: Decimal;
+        discountGr: Record "Customer Discount Group";
+    begin
+        rItem.Reset();
+        rItem.SetRange("No.", codProducto);
+        if rItem.FindSet() then;
+
+        //B2C
+        rPriceListLine.Reset();
+        rPriceListLine.SetRange("Price Type", rPriceListLine."Price Type"::Sale);
+        rPriceListLine.SetRange("Source Type", rPriceListLine."Source Type"::"All Customers");
+        rPriceListLine.SetRange("Asset Type", rPriceListLine."Asset Type"::Item);
+        rPriceListLine.SetRange("Asset No.", rItem."No.");
+        rPriceListLine.SetRange(Status, rPriceListLine.Status::Active);
+        rPriceListLine.SetFilter("Ending Date", '>=%1|%2', Today, 0D);
+        if rPriceListLine.FindSet() then
+            repeat
+                unitPrice := 0;
+                Clear(jsonObj);
+                jsonObj.Add('idProducto', rItem.IdPS);
+                jsonObj.Add('idCombinacion', rItem."Id Combinacion");
+                jsonObj.Add('idGrupoCliente', 0);
+                if (rPriceListLine."Unit Price" > 0) and (rPriceListLine."Line Discount %" > 0) then
+                    unitPrice := rPriceListLine."Unit Price" * (1 - rPriceListLine."Line Discount %" / 100);
+                if (rPriceListLine."Unit Price" > 0) and (rPriceListLine."Line Discount %" = 0) then
+                    unitPrice := rPriceListLine."Unit Price";
+                if (rPriceListLine."Unit Price" = 0) and (rPriceListLine."Line Discount %" > 0) then
+                    discount := rPriceListLine."Line Discount %";
+
+                jsonObj.Add('precio', unitPrice);
+                jsonObj.Add('descuento', discount);
+                jsonObj.Add('fromQuantity', rPriceListLine."Minimum Quantity");
+                jsonObj.Add('fromDate', Format(rPriceListLine."Starting Date", 0, '<day,2>-<month,2>-<Year4>'));
+                jsonObj.Add('toDate', Format(rPriceListLine."Ending Date", 0, '<day,2>-<month,2>-<Year4>'));
+                jsonArr.Add(jsonObj);
+            UNTIL rPriceListLine.Next() = 0;
+
+
+        //B2B
+        discountGr.Reset();
+        discountGr.SetFilter("Id Group PS", '>0');
+        if discountGr.FindSet() then
+            repeat
+                rPriceListLine.Reset();
+                rPriceListLine.SetRange("Price Type", rPriceListLine."Price Type"::Sale);
+                rPriceListLine.SetRange("Source Type", rPriceListLine."Source Type"::"Customer Disc. Group");
+                rPriceListLine.SetRange("Source No.", discountGr.Code);
+                rPriceListLine.SetRange("Asset Type", rPriceListLine."Asset Type"::Item);
+                rPriceListLine.SetRange("Asset No.", rItem."No.");
+                rPriceListLine.SetRange(Status, rPriceListLine.Status::Active);
+                rPriceListLine.SetFilter("Ending Date", '>=%1|%2', Today, 0D);
+                if rPriceListLine.FindSet() then
+                    repeat
+                        unitPrice := 0;
+                        Clear(jsonObj);
+                        jsonObj.Add('idProducto', rItem.IdPS);
+                        jsonObj.Add('idCombinacion', rItem."Id Combinacion");
+                        jsonObj.Add('idGrupoCliente', discountGr."Id Group PS");
+                        if (rPriceListLine."Unit Price" > 0) and (rPriceListLine."Line Discount %" > 0) then
+                            unitPrice := rPriceListLine."Unit Price" * (1 - rPriceListLine."Line Discount %" / 100);
+                        if (rPriceListLine."Unit Price" > 0) and (rPriceListLine."Line Discount %" = 0) then
+                            unitPrice := rPriceListLine."Unit Price";
+                        if (rPriceListLine."Unit Price" = 0) and (rPriceListLine."Line Discount %" > 0) then
+                            discount := rPriceListLine."Line Discount %";
+
+                        jsonObj.Add('precio', unitPrice);
+                        jsonObj.Add('descuento', discount);
+                        jsonObj.Add('fromQuantity', rPriceListLine."Minimum Quantity");
+                        jsonObj.Add('fromDate', Format(rPriceListLine."Starting Date", 0, '<day,2>-<month,2>-<Year4>'));
+                        jsonObj.Add('toDate', Format(rPriceListLine."Ending Date", 0, '<day,2>-<month,2>-<Year4>'));
+                        jsonArr.Add(jsonObj);
+                    UNTIL rPriceListLine.Next() = 0;
+            until discountGr.Next() = 0;
+
+        jsonArr.WriteTo(responseJSON);
+    end;
+
+    procedure getManufacturersSinSincronizar(var responseJSON: Text)
+    var
+        rManufacturer: Record Manufacturer;
+        jsonArr: JsonArray;
+        jsonObj: JsonObject;
+    begin
+        rManufacturer.Reset();
+        rManufacturer.SetRange("IdPS", 0);
+        if rManufacturer.FindSet() then
+            repeat
+                Clear(jsonObj);
+                jsonObj.Add('Code', rManufacturer.Code);
+                jsonObj.Add('Name', rManufacturer.Name);
+                jsonObj.Add('IdPS', rManufacturer."IdPS");
+                jsonArr.Add(jsonObj);
+            until rManufacturer.Next() = 0;
+        jsonArr.WriteTo(responseJSON);
+    end;
+
+    procedure setIdPSManufacturers(jsonArray: Text)
+    var
+        rManufacturer: Record Manufacturer;
+        jsonArr: JsonArray;
+        jsonToken: JsonToken;
+        jsonObj: JsonObject;
+        jsonVal: JsonToken;
+        codigo: Code[10];
+        idPS: Integer;
+    begin
+        jsonArr.ReadFrom(jsonArray);
+        foreach jsonToken in jsonArr do begin
+            jsonObj := jsonToken.AsObject();
+
+            jsonObj.Get('Code', jsonVal);
+            codigo := CopyStr(jsonVal.AsValue().AsText(), 1, MaxStrLen(codigo));
+
+            jsonObj.Get('IdPS', jsonVal);
+            idPS := jsonVal.AsValue().AsInteger();
+            if idPS > 0 then begin
+                if rManufacturer.Get(codigo) then begin
+                    rManufacturer."IdPS" := idPS;
+                    rManufacturer.Modify();
+                end;
+            end;
+        end;
+    end;
+
+    procedure getSincroFabricantes(): Boolean
+    var
+        rSalesSetup: Record "Sales & Receivables Setup";
+    begin
+        rSalesSetup.Get();
+        case rSalesSetup."Sincronizar fabricantes" of
+            rSalesSetup."Sincronizar fabricantes"::Automatica, rSalesSetup."Sincronizar fabricantes"::Si:
+                exit(true);
+            else
+                exit(false);
+        end;
+    end;
+
+    procedure insertarOperacionActualizacionFabricante(codProducto: Code[20]; codFabricante: code[20])
+    var
+        rOperacionesAsincronas: Record "Modificaciones Asincronas PS";
+        rItem: Record Item;
+        rManufacturer: Record Manufacturer;
+    begin
+        IF rItem.GET(codProducto) THEN BEGIN
+            IF rItem."Producto web" THEN BEGIN
+                if not rManufacturer.Get(codFabricante) then
+                    exit;
+                rOperacionesAsincronas.INIT();
+                rOperacionesAsincronas.idAsync := 0;
+                rOperacionesAsincronas.IdOrigen := FORMAT(rItem.IdPs);
+                rOperacionesAsincronas.Tipo := rOperacionesAsincronas.Tipo::Fabricante;
+                rOperacionesAsincronas.IdDestino := Format(rManufacturer.IdPS);
+                rOperacionesAsincronas."Fecha/Hora" := CURRENTDATETIME();
+                rOperacionesAsincronas.INSERT(TRUE);
+            END;
+        END;
+    end;
+
 
 
 }

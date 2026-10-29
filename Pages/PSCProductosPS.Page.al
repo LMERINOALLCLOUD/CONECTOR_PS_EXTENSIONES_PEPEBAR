@@ -18,39 +18,39 @@ page 60100 "ProductosPS"
             repeater(general)
             {
                 Editable = false;
-                field("No."; "No.")
+                field("No."; Rec."No.")
                 {
                     ApplicationArea = All;
                 }
-                field("No. 2"; "No. 2")
+                field("No. 2"; Rec."No. 2")
                 {
                     ApplicationArea = All;
                 }
-                field(Description; Description)
+                field(Description; Rec.Description)
                 {
                     ApplicationArea = All;
                 }
-                field("Search Description"; "Search Description")
+                field("Search Description"; Rec."Search Description")
                 {
                     ApplicationArea = All;
                 }
-                field("Unit Price"; "Unit Price")
+                field("Unit Price"; Rec."Unit Price")
                 {
                     ApplicationArea = All;
                 }
-                field(IdPS; IdPS)
+                field(IdPS; Rec.IdPS)
                 {
                     ApplicationArea = All;
                 }
-                field("Producto web"; "Producto web")
+                field("Producto web"; Rec."Producto web")
                 {
                     ApplicationArea = All;
                 }
-                field("Item Category Code"; "Item Category Code")
+                field("Item Category Code"; Rec."Item Category Code")
                 {
                     ApplicationArea = All;
                 }
-                field("Descripcion larga PS"; "Descripcion larga PS")
+                field("Descripcion larga PS"; Rec."Descripcion larga PS")
                 {
                     ApplicationArea = All;
                 }
@@ -78,15 +78,19 @@ page 60100 "ProductosPS"
                 {
                     ApplicationArea = All;
                 }
-                field("Multiples unidades"; "Multiples unidades")
+                field("Multiples unidades"; Rec."Multiples unidades")
                 {
                     ApplicationArea = All;
                 }
-                field(Combinacion; Combinacion)
+                field(Combinacion; Rec.Combinacion)
                 {
                     ApplicationArea = All;
                 }
-                field("Id Combinacion"; "Id Combinacion")
+                field("Id Combinacion"; Rec."Id Combinacion")
+                {
+                    ApplicationArea = All;
+                }
+                field(idFabricante; idFabricante)
                 {
                     ApplicationArea = All;
                 }
@@ -103,6 +107,7 @@ page 60100 "ProductosPS"
     var
         rDescripcionesVarias: Record "Descripciones Varias";
         instr: InStream;
+        rManufacturer: Record Manufacturer;
     begin
         descripcionCorta := '';
         descripcionLarga := '';
@@ -110,6 +115,7 @@ page 60100 "ProductosPS"
         varDescPto2 := '';
         varDescPto3 := '';
         varDescPto4 := '';
+        idFabricante := '0';
         rDescripcionesVarias.Reset();
         rDescripcionesVarias.SetRange(Codigo, Rec."No.");
         if rDescripcionesVarias.FindSet() then
@@ -135,6 +141,9 @@ page 60100 "ProductosPS"
                 end;
 
             until rDescripcionesVarias.Next() = 0;
+
+        if rManufacturer.Get(Rec."Manufacturer Code") then
+            idFabricante := Format(rManufacturer.IdPS);
     end;
 
     var
@@ -144,4 +153,5 @@ page 60100 "ProductosPS"
         varDescPto2: Text;
         varDescPto3: Text;
         varDescPto4: Text;
+        idFabricante: Text;
 }

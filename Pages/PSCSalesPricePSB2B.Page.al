@@ -14,31 +14,31 @@ page 60111 PSCSalesPricePSB2B
         {
             repeater(Group)
             {
-                field(Code; Code)
+                field(Code; Rec.Code)
                 {
                     ApplicationArea = All;
                 }
-                field("Starting Date"; "Starting Date")
+                field("Starting Date"; Rec."Starting Date")
                 {
                     ApplicationArea = All;
                 }
-                field("Ending Date"; "Ending Date")
+                field("Ending Date"; Rec."Ending Date")
                 {
                     ApplicationArea = All;
                 }
-                field("Minimum Quantity"; "Minimum Quantity")
+                field("Minimum Quantity"; Rec."Minimum Quantity")
                 {
                     ApplicationArea = All;
                 }
-                field("Unit of Measure Code"; "Unit of Measure Code")
+                field("Unit of Measure Code"; Rec."Unit of Measure Code")
                 {
                     ApplicationArea = All;
                 }
-                field("Line Discount %"; "Line Discount %")
+                field("Line Discount %"; Rec."Line Discount %")
                 {
                     ApplicationArea = All;
                 }
-                field("Id Group PS"; "Id Group PS")
+                field("Id Group PS"; Rec."Id Group PS")
                 {
                     ApplicationArea = All;
                 }

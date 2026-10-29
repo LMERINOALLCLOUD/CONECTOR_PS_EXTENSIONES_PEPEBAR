@@ -17,23 +17,23 @@ page 60106 "Atributos PS"
         {
             repeater(general)
             {
-                field(ID; ID)
+                field(ID; Rec.ID)
                 {
                     ApplicationArea = All;
                 }
-                field(Name; Name)
+                field(Name; Rec.Name)
                 {
                     ApplicationArea = All;
                 }
-                field(Type; Type)
+                field(Type; Rec.Type)
                 {
                     ApplicationArea = All;
                 }
-                field("Unit of Measure"; "Unit of Measure")
+                field("Unit of Measure"; Rec."Unit of Measure")
                 {
                     ApplicationArea = All;
                 }
-                field(IdPs; IdPs)
+                field(IdPs; Rec.IdPs)
                 {
                     ApplicationArea = All;
                 }

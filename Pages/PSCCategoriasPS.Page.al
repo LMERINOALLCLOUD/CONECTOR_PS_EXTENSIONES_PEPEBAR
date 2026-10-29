@@ -16,23 +16,23 @@ page 60105 "Categorias PS"
         {
             repeater(general)
             {
-                field(Code; Code)
+                field(Code; Rec.Code)
                 {
                     ApplicationArea = All;
                 }
-                field("Parent Category"; "Parent Category")
+                field("Parent Category"; Rec."Parent Category")
                 {
                     ApplicationArea = All;
                 }
-                field(Description; Description)
+                field(Description; Rec.Description)
                 {
                     ApplicationArea = All;
                 }
-                field(Indentation; Indentation)
+                field(Indentation; Rec.Indentation)
                 {
                     ApplicationArea = All;
                 }
-                field(IdPs; IdPs)
+                field(IdPs; Rec.IdPs)
                 {
                     ApplicationArea = All;
                 }

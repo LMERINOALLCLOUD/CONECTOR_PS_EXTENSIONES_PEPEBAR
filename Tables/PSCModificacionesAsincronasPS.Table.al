@@ -28,7 +28,7 @@ table 60101 "Modificaciones Asincronas PS"
         {
             CaptionML = ESP = 'Tipo', ENU = 'Type';
             DataClassification = ToBeClassified;
-            OptionMembers = "Estado Pedido",Stock,Seguimiento,"Baja Producto",Tarifa,Pedido,Categoria,Atributos,"Imagenes producto","Pedido-compra-INN",Marca,"Descripcion larga","Grupo Cliente","Update Categoria Tree","Campos personalizados","Unidades multiples";
+            OptionMembers = "Estado Pedido",Stock,Seguimiento,"Baja Producto",Tarifa,Pedido,Categoria,Atributos,"Imagenes producto","Pedido-compra-INN",Marca,"Descripcion larga","Grupo Cliente","Update Categoria Tree","Campos personalizados","Unidades multiples",Fabricante;
         }
 
         field(5; "Cantidad"; Decimal)

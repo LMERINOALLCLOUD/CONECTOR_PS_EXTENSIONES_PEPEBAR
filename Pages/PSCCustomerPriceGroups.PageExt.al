@@ -4,7 +4,7 @@ pageextension 60108 PSCCustomerDiscGroups extends "Customer Disc. Groups"
     {
         addafter(Description)
         {
-            field("Id Group PS"; "Id Group PS")
+            field("Id Group PS"; Rec."Id Group PS")
             {
                 ApplicationArea = All;
             }
